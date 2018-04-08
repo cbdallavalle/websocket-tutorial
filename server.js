@@ -11,6 +11,23 @@ app.get('/', function (req, res){
   res.sendFile(path.join(__dirname, '/public/index.html'));
 });
 
+io.on('connection', socket => {
+  console.log('Connected for better or for worse');
+  socket.emit('message', `A new user, ${ Date.now() }, has connected`);
+
+  socket.on('message', message => {
+    console.log(`The new user's name is ${ message.username }, and their message is ${ message.text }`)
+  })
+
+  socket.on('mission', mission => {
+    console.log(mission)
+  })
+
+  socket.on('disconnect', () => {
+    console.log('A user has disconnected.')
+  })
+})
+
 http.listen(process.env.PORT || 3000, function(){
   console.log('Your server is up and running on Port 3000. Good job!');
 });
